@@ -94,21 +94,21 @@ public class BattleLogic : MonoBehaviour
         // Check to see if there are no heroes nor monsters left. If so, end the battle and announce a draw.
         if( this.activeHeroes.Count == 0 && this.activeMonsters.Count == 0 )
         {
-            this.EndBattle( "All heroes and monsters have been defeated." );
+            this.EndBattle("Everybody's dead Dave");
             return;
         }
 
         // Check to see if there are any active heroes left. If not, end the battle and announce the heroes have been defeated.
         if( this.activeHeroes.Count == 0 )
         {
-            this.EndBattle( "Defeat! The heroes have been defeated!" );
+            this.EndBattle("Sad times my dude, they're dead. You Lose.");
             return;
         }
 
         // Check to see if there are any active monsters left. If not, end the battle and announce the monsters have been defeated.
         if( this.activeMonsters.Count == 0 )
         {
-            this.EndBattle( "Victory! The monsters have been defeated!" );
+            this.EndBattle("Good job I guess. You Win.");
             return;
         }
 
