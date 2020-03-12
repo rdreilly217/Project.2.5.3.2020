@@ -59,22 +59,24 @@ public class BattleLogic : MonoBehaviour
         //       Instantiated characters need to be added to the activeList.
 
         // Loop through each of the spawn position and instantiate a random character at that position.
-        foreach( Transform sp in spawnPositions )
+        foreach (Transform sp in spawnPositions)
         {
             // Check to see if position is null (eg it may not have been assigned in the Unity editor) If it is null, go on with other spawn positions.
-            if( sp == null ) { continue; }
+            if (sp == null) { continue; }
 
             // Instantiate a random character from the characterLibrary (*See 'Instantiate' and 'Random.Range' in the Unity Scripting Reference for more)
             // HINT: GameObject newCharacter = ...
+            GameObject newCharacter = Instantiate(characterLibrary[Random.Range(0, characterLibrary.Length)].gameObject);
 
             // Fix the new character GameObject name (eg remove the "(Clone)" Unity puts at the end)  Uncomment the next line...
-            //newCharacter.name = newCharacter.name.Replace( "(Clone)", "" );
+            newCharacter.name = newCharacter.name.Replace( "(Clone)", "" );
 
             // Position the new character at the current loop spawn position.
             // HINT: newCharacter.transform.position = ...
+            newCharacter.transform.position = sp.position;
 
             // Add the new character to the passed in active List.
-            //activeList.Add( newCharacter.GetComponent<CharacterStats>() );
+            activeList.Add( newCharacter.GetComponent<CharacterStats>() );
         }
     }
 
@@ -113,13 +115,14 @@ public class BattleLogic : MonoBehaviour
         // TODO: Randomly select a hero and monster from the active heroes ( eg choosing one hero and one monster per round )
         CharacterStats hero = this.activeHeroes[ Random.Range( 0, this.activeHeroes.Count ) ];
         // HINT: CharacterStats monster = ...
+        CharacterStats monster = this.activeMonsters[Random.Range(0, this.activeMonsters.Count)];
 
         // Dull the color of all active characters.
         this.SetAllActiveCharacterColors( Color.gray );
 
         // Set the randomly selected, fighting hero and monster characters back to white ( eg Makes it easier to see which characters are fighting )
         hero.GetComponent<SpriteRenderer>().color = Color.white;
-        //monster.GetComponent<SpriteRenderer>().color = Color.white;
+        monster.GetComponent<SpriteRenderer>().color = Color.white;
 
         // Some text that will be
         string log = "";
@@ -146,28 +149,46 @@ public class BattleLogic : MonoBehaviour
         if( Random.value > 0.5f )
         {
             // Monster hits hero (HINT: See TakeDamage( amount ) method in CharacterStats script)
+            hero.TakeDamage(monster.damage);
 
             // Check hero health.
-            if( hero.health <= 0f )
+            if ( hero.health <= 0f )
             {
                 // If the heros' health is less than or equal to zero, then destroy the hero and output 'the monster has defeated the hero'.
                 // HINT: Destroy( ... );
                 // log = monster.name + " defeated " + hero.name + ".";
+                Destroy(hero.gameObject);
+                log = monster.name + " defeated " + hero.name + ".";
             }
             else
             {
                 // If the heros' health is greater than zero, then output 'the monster hit the hero for X points of damage'.
                 // log = monster.name + " hit " + hero.name + " for " + monster.damage + " points of damage.";
+                log = monster.name + " hit " + hero.name + " for " + monster.damage + " points of damage.";
             }
         }
         else
         {
             // Hero hits monster (HINT: See TakeDamage( amount ) method in CharacterStats script)
-           
+            monster.TakeDamage(hero.damage);
             // Check if monster health is less than or equal to zero.
-                // If so, destroy the monster gameobject and output '{hero name} defeated {monster name}'
-                // Else, output '{hero name} hit {monster name} for {hero damage} points of damage.'
-            
+            // If so, destroy the monster gameobject and output '{hero name} defeated {monster name}'
+            // Else, output '{hero name} hit {monster name} for {hero damage} points of damage.'
+            if (monster.health <= 0f)
+            {
+                // If the heros' health is less than or equal to zero, then destroy the hero and output 'the monster has defeated the hero'.
+                // HINT: Destroy( ... );
+                // log = monster.name + " defeated " + hero.name + ".";
+                Destroy(monster.gameObject);
+                log = hero.name + " defeated " + monster.name + ".";
+            }
+            else
+            {
+                // If the heros' health is greater than zero, then output 'the monster hit the hero for X points of damage'.
+                // log = monster.name + " hit " + hero.name + " for " + monster.damage + " points of damage.";
+                log = hero.name + " hit " + monster.name + " for " + hero.damage + " points of damage.";
+            }
+
         }
 
 
